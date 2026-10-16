@@ -35,6 +35,8 @@ S8: Flujo extendido: reinicio sin recargar la página, limpieza de tracks de cá
 | T5 | S3, S7, S8 | inline | ccafe2a | done |
 | T6 | S1-S8 | inline | ccafe2a | done (sintaxis JS verificada con `node --check`) |
 | T7 | S1, S4 | inline | 83d94fd | done (pantalla explícita de permisos de cámara) |
+| T8 | S1, S3, S5 | inline | 4880d75 | done (instanciar Game, modo rápido sin cámara) |
+| T9 | S1, S3, S5 | inline | dc62d40 | done (fix vidas negativas, timeout video 5s) |
 
 ## Log
 L1: Usuario solicitó implementar todo `spec.md` de una vez (2026-10-16).
