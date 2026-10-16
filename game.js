@@ -314,11 +314,10 @@ class Game {
 
   updateObjects(now, dt) {
     const move = this.motion.update();
-    // Compensa el espejo del contenedor: invierte X respecto al ancho del canvas
     let drawMove = null;
     if (move && move.active) {
       drawMove = {
-        x: this.canvas.width - move.x - move.w,
+        x: move.x,
         y: move.y,
         w: move.w,
         h: move.h,
@@ -417,7 +416,7 @@ class Game {
     let drawMove = null;
     if (move && move.active) {
       drawMove = {
-        x: this.canvas.width - move.x - move.w,
+        x: move.x,
         y: move.y,
         w: move.w,
         h: move.h,

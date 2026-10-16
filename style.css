@@ -136,8 +136,7 @@ html, body {
   border-radius: 12px;
   overflow: hidden;
   background: #000;
-  /* Espejo consistente: video y canvas se espejan juntos */
-  transform: scaleX(-1);
+  /* Sin espejo: la cámara se muestra tal cual */
 }
 
 #video {
