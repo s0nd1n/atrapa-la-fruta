@@ -9,6 +9,9 @@ Implementar un mini-juego arcade web en una sola página que use la cámara web 
 ## Delivery strategy
 `ask-on-risk` (predeterminada)
 
+## Commits
+- `ccafe2a` — MVP completo (T1-T6)
+
 ## Test runner
 Navegador (inspección manual de flujos BDD). No hay runner de tests automatizado configurado; la verificación es funcional en el navegador.
 
@@ -23,14 +26,15 @@ S7: Dificultad progresiva: velocidad de caída y frecuencia de spawn aumentan co
 S8: Flujo extendido: reinicio sin recargar la página, limpieza de tracks de cámara al salir, fallback sin cámara.
 
 ## Tasks
-| ID | Specs | Route | Commit |
-|----|-------|-------|--------|
-| T1 | S6 | inline | estructura de archivos y git repo |
-| T2 | S1, S4 | inline | `index.html` con pantallas y overlays |
-| T3 | S1, S4, S5 | inline | `style.css` con efecto espejo, HUD y layouts |
-| T4 | S2 | inline | `motion.js` con frame differencing y fallback |
-| T5 | S3, S7, S8 | inline | `game.js` con lógica completa, sonidos, `localStorage` |
-| T6 | S1-S8 | inline | verificación funcional de flujos BDD en el navegador |
+| ID | Specs | Route | Commit | Status |
+|----|-------|-------|--------|--------|
+| T1 | S6 | inline | ccafe2a | done |
+| T2 | S1, S4 | inline | ccafe2a | done |
+| T3 | S1, S4, S5 | inline | ccafe2a | done |
+| T4 | S2 | inline | ccafe2a | done |
+| T5 | S3, S7, S8 | inline | ccafe2a | done |
+| T6 | S1-S8 | inline | ccafe2a | done (sintaxis JS verificada con `node --check`) |
 
 ## Log
 L1: Usuario solicitó implementar todo `spec.md` de una vez (2026-10-16).
+L2: MVP implementado en un solo commit `ccafe2a` sobre `feature/atrapa-la-fruta-caida`: index.html, style.css, motion.js, game.js. Verificación de sintaxis JS aprobada. Pendiente: prueba funcional en navegador (permisos de cámara, frame differencing, colisiones, game over y récord).
