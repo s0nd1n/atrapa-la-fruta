@@ -87,7 +87,7 @@ class Game {
     const btnResume = document.getElementById('btn-resume');
     if (btnResume) btnResume.addEventListener('click', () => this.setPaused(false));
     const btnRestart = document.getElementById('btn-restart');
-    if (btnRestart) btnRestart.addEventListener('click', () => this.reset());
+    if (btnRestart) btnRestart.addEventListener('click', () => this.restartGame());
     if (this.btnFallback) this.btnFallback.addEventListener('click', () => this.enableFallback());
     if (this.btnReintentarCamara) this.btnReintentarCamara.addEventListener('click', () => {
       this.errorOverlay.classList.add('hidden');
@@ -246,6 +246,21 @@ class Game {
     this.cameraReady = false;
     this.motion.prevGray = null;
     this.setScreen('screen-start');
+  }
+
+  restartGame() {
+    if (this.stream) {
+      this.stream.getTracks().forEach((t) => t.stop());
+      this.stream = null;
+    }
+    this.video.srcObject = null;
+    this.cameraReady = false;
+    this.fallbackMode = false;
+    this.motion.prevGray = null;
+    this.errorOverlay.classList.add('hidden');
+    this.setScreen('screen-game');
+    this.resetState();
+    this.iniciarBucleConCamara();
   }
 
   setPaused(p) {

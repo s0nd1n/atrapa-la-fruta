@@ -42,13 +42,47 @@ html, body {
 
 .card {
   background: var(--panel);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 16px;
-  padding: 32px 28px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 36px 30px;
   text-align: center;
-  max-width: 420px;
-  width: 100%;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  max-width: 440px;
+  width: 90%;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+  animation: cardAparece 0.3s ease-out;
+}
+
+@keyframes cardAparece {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Game Over específico */
+#screen-gameover .card {
+  border-color: rgba(231, 76, 60, 0.4);
+}
+
+#screen-gameover h1 {
+  color: #ff7675;
+  font-size: 2rem;
+  margin-bottom: 16px;
+}
+
+.final-score {
+  font-size: 1.6rem;
+  margin: 14px 0 6px 0;
+  font-weight: 700;
+}
+
+.high-score {
+  font-size: 1.2rem;
+  margin-bottom: 28px;
+  color: #f1c40f;
+}
+
+#screen-gameover .btn-primary {
+  font-size: 1.15rem;
+  padding: 16px 32px;
 }
 
 .card h1 {
