@@ -34,7 +34,8 @@ S8: Flujo extendido: reinicio sin recargar la página, limpieza de tracks de cá
 | T4 | S2 | inline | ccafe2a | done |
 | T5 | S3, S7, S8 | inline | ccafe2a | done |
 | T6 | S1-S8 | inline | ccafe2a | done (sintaxis JS verificada con `node --check`) |
+| T7 | S1, S4 | inline | 83d94fd | done (pantalla explícita de permisos de cámara) |
 
 ## Log
 L1: Usuario solicitó implementar todo `spec.md` de una vez (2026-10-16).
-L2: MVP implementado en un solo commit `ccafe2a` sobre `feature/atrapa-la-fruta-caida`: index.html, style.css, motion.js, game.js. Verificación de sintaxis JS aprobada. Pendiente: prueba funcional en navegador (permisos de cámara, frame differencing, colisiones, game over y récord).
+L2: MVP implementado en commits `ccafe2a` y `83d94fd` sobre `feature/atrapa-la-fruta-caida`: index.html, style.css, motion.js, game.js. Se agregó pantalla explícita de permisos de cámara (modal con aceptar/denegar, fallback a mouse/touch si se deniega o no hay cámara). Verificación de sintaxis JS aprobada. Pendiente: prueba funcional en navegador (permisos de cámara, frame differencing, colisiones, game over y récord).
