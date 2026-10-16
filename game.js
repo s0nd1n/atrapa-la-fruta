@@ -71,7 +71,7 @@ class Game {
 
   bindUI() {
     const btnStart = document.getElementById('btn-start');
-    if (btnStart) btnStart.addEventListener('click', () => this.startSinCamara());
+    if (btnStart) btnStart.addEventListener('click', () => this.startConCamara());
     if (this.btnModoRapido) this.btnModoRapido.addEventListener('click', () => this.startSinCamara());
     if (this.btnPermisosAceptar) this.btnPermisosAceptar.addEventListener('click', () => {
       this.modalPermisos.classList.add('hidden');
@@ -105,7 +105,7 @@ class Game {
   }
 
   mostrarModalPermisos() {
-    this.mostrarEstado('Preparando juego...', 'info');
+    this.mostrarEstado('Solicitando permiso de cámara...', 'info');
     this.modalPermisos.classList.remove('hidden');
   }
 
@@ -134,36 +134,45 @@ class Game {
 
   async iniciarBucleConCamara() {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      this.mostrarEstado('Tu navegador no soporta la cámara. Usá el modo mouse/touch.', 'error');
+      this.mostrarEstado('Tu navegador no soporta la cámara.', 'error');
       return;
     }
 
-    const tryStream = async (constraints) => {
-      console.log('[AF] Solicitando cámara con:', constraints);
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      this.video.srcObject = stream;
-      await this.video.play();
-      return stream;
-    };
+    const constraintsList = [
+      { video: true },
+      { video: { facingMode: 'user' } },
+      { video: { facingMode: 'environment' } }
+    ];
+
+    let stream = null;
+    let lastError = null;
+
+    for (const constraints of constraintsList) {
+      try {
+        console.log('[AF] Probando cámara con:', JSON.stringify(constraints));
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+        this.video.srcObject = stream;
+        await this.video.play();
+        break;
+      } catch (err) {
+        console.warn('[AF] Falló con:', JSON.stringify(constraints), err);
+        lastError = err;
+      }
+    }
+
+    if (!stream) {
+      console.error('[AF] No se pudo abrir ninguna cámara:', lastError);
+      this.mostrarEstado('No se pudo acceder a la cámara. Revisá que ningún otro programa la esté usando.', 'error');
+      return;
+    }
+
+    this.stream = stream;
 
     const waitMetadata = () => new Promise((res, rej) => {
-      const timeout = setTimeout(() => rej(new Error('Timeout esperando video')), 5000);
+      const timeout = setTimeout(() => rej(new Error('Timeout esperando video')), 10000);
       this.video.onloadedmetadata = () => { clearTimeout(timeout); res(); };
       this.video.onerror = () => { clearTimeout(timeout); rej(new Error('Error de reproducción de video')); };
     });
-
-    try {
-      this.stream = await tryStream({ video: { facingMode: 'environment' } });
-    } catch (envErr) {
-      console.warn('[AF] facingMode environment falló, probando user:', envErr);
-      try {
-        this.stream = await tryStream({ video: { facingMode: 'user' } });
-      } catch (userErr) {
-        console.error('[AF] Cámara no disponible:', userErr);
-        this.mostrarEstado('No se pudo acceder a la cámara. Jugá con mouse/touch.', 'error');
-        return;
-      }
-    }
 
     try {
       await waitMetadata();
