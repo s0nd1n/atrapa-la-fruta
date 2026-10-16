@@ -71,7 +71,7 @@ class Game {
 
   bindUI() {
     const btnStart = document.getElementById('btn-start');
-    if (btnStart) btnStart.addEventListener('click', () => this.mostrarModalPermisos());
+    if (btnStart) btnStart.addEventListener('click', () => this.startSinCamara());
     if (this.btnModoRapido) this.btnModoRapido.addEventListener('click', () => this.startSinCamara());
     if (this.btnPermisosAceptar) this.btnPermisosAceptar.addEventListener('click', () => {
       this.modalPermisos.classList.add('hidden');
@@ -105,17 +105,19 @@ class Game {
   }
 
   mostrarModalPermisos() {
-    this.mostrarEstado('Solicitando permiso de cámara...', 'info');
+    this.mostrarEstado('Preparando juego...', 'info');
     this.modalPermisos.classList.remove('hidden');
   }
 
   startConCamara() {
+    this.modalPermisos.classList.add('hidden');
     this.setScreen('screen-game');
     this.resetState();
     this.iniciarBucleConCamara();
   }
 
   startSinCamara() {
+    this.modalPermisos.classList.add('hidden');
     this.setScreen('screen-game');
     this.resetState();
     this.cameraReady = false;
@@ -131,6 +133,11 @@ class Game {
   }
 
   async iniciarBucleConCamara() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      this.mostrarEstado('Tu navegador no soporta la cámara. Usá el modo mouse/touch.', 'error');
+      return;
+    }
+
     const tryStream = async (constraints) => {
       console.log('[AF] Solicitando cámara con:', constraints);
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -153,18 +160,7 @@ class Game {
         this.stream = await tryStream({ video: { facingMode: 'user' } });
       } catch (userErr) {
         console.error('[AF] Cámara no disponible:', userErr);
-        this.cameraReady = false;
-        this.errorOverlay.classList.remove('hidden');
-        this.errorOverlay.querySelector('p').textContent =
-          'No se pudo acceder a la cámara. Abrí el archivo con un servidor local (ej. npx serve) o usá el modo mouse/touch.';
-        this.motion.enableFallback();
-        this.fallbackMode = true;
-        this.enableFallbackInput();
-        this.lastTime = performance.now();
-        this.running = true;
-        this.paused = false;
-        document.getElementById('overlay-pause').classList.add('hidden');
-        requestAnimationFrame((t) => this.loop(t));
+        this.mostrarEstado('No se pudo acceder a la cámara. Jugá con mouse/touch.', 'error');
         return;
       }
     }
@@ -173,16 +169,7 @@ class Game {
       await waitMetadata();
     } catch (metaErr) {
       console.error('[AF] Video no cargó:', metaErr);
-      this.cameraReady = false;
-      this.errorOverlay.classList.remove('hidden');
-      this.motion.enableFallback();
-      this.fallbackMode = true;
-      this.enableFallbackInput();
-      this.lastTime = performance.now();
-      this.running = true;
-      this.paused = false;
-      document.getElementById('overlay-pause').classList.add('hidden');
-      requestAnimationFrame((t) => this.loop(t));
+      this.mostrarEstado('La cámara no respondió. Jugá con mouse/touch.', 'error');
       return;
     }
 
