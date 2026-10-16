@@ -37,8 +37,12 @@ S8: Flujo extendido: reinicio sin recargar la página, limpieza de tracks de cá
 | T7 | S1, S4 | inline | 83d94fd | done (pantalla explícita de permisos de cámara) |
 | T8 | S1, S3, S5 | inline | 4880d75 | done (instanciar Game, modo rápido sin cámara) |
 | T9 | S1, S3, S5 | inline | dc62d40 | done (fix vidas negativas, timeout video 5s) |
-| T10 | S1, S2, S5 | inline | 09d99e3 | done (iniciar directo en modo mouse/touch, cámara opcional, sin timeouts bloqueantes) |
+| T10 | S1, S2, S5 | inline | 09d99e3 | done (flujo inicial con mouse/touch) |
+| T11 | S1, S2, S5 | inline | 8b37269 | done (flujo de cámara robusto: 3 constraint sets, timeout 10s, cámara primordial) |
 
 ## Log
 L1: Usuario solicitó implementar todo `spec.md` de una vez (2026-10-16).
-L2: MVP implementado en commits `ccafe2a` y `83d94fd` sobre `feature/atrapa-la-fruta-caida`: index.html, style.css, motion.js, game.js. Se agregó pantalla explícita de permisos de cámara (modal con aceptar/denegar, fallback a mouse/touch si se deniega o no hay cámara). Verificación de sintaxis JS aprobada. Pendiente: prueba funcional en navegador (permisos de cámara, frame differencing, colisiones, game over y récord).
+L2: MVP implementado en commits `ccafe2a` y `83d94fd` sobre `feature/atrapa-la-fruta-caida`: index.html, style.css, motion.js, game.js. Se agregó pantalla explícita de permisos de cámara.
+L3: Fixes críticos: Game instanciado en DOMContentLoaded, RangeError en vidas negativas, timeout de video a 5s.
+L4: "Comenzar Juego" iniciaba en modo mouse/touch sin cámara. Usuario requiere cámara como primordial.
+L5: Flujo de cámara reescrito: prueba con `video: true`, luego `facingMode: 'user'`, luego `facingMode: 'environment'`; timeout 10s; botón "Comenzar Juego" inicia con cámara por defecto. Commit `8b37269`.
