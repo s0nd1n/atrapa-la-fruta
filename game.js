@@ -26,11 +26,14 @@ class Game {
     this.highScoreEl = document.getElementById('high-score');
     this.errorOverlay = document.getElementById('overlay-camera-error');
     this.btnFallback = document.getElementById('btn-fallback');
+    this.btnReintentarCamara = document.getElementById('btn-reintentar-camara');
     this.btnModoRapido = document.getElementById('btn-modo-rapido');
     this.modalPermisos = document.getElementById('modal-permisos');
     this.btnPermisosAceptar = document.getElementById('btn-permisos-aceptar');
     this.btnPermisosDenegar = document.getElementById('btn-permisos-denegar');
     this.msgEstado = document.getElementById('msg-estado');
+    this.errorTitulo = document.getElementById('error-titulo');
+    this.errorMensaje = document.getElementById('error-mensaje');
 
     this.score = 0;
     this.lives = CONFIG.startLives;
@@ -86,6 +89,10 @@ class Game {
     const btnRestart = document.getElementById('btn-restart');
     if (btnRestart) btnRestart.addEventListener('click', () => this.reset());
     if (this.btnFallback) this.btnFallback.addEventListener('click', () => this.enableFallback());
+    if (this.btnReintentarCamara) this.btnReintentarCamara.addEventListener('click', () => {
+      this.errorOverlay.classList.add('hidden');
+      this.startConCamara();
+    });
   }
 
   resizeCanvas() {
@@ -113,6 +120,7 @@ class Game {
     this.modalPermisos.classList.add('hidden');
     this.setScreen('screen-game');
     this.resetState();
+    this.errorOverlay.classList.add('hidden');
     this.iniciarBucleConCamara();
   }
 
@@ -162,7 +170,9 @@ class Game {
 
     if (!stream) {
       console.error('[AF] No se pudo abrir ninguna cámara:', lastError);
-      this.mostrarEstado('No se pudo acceder a la cámara. Revisá que ningún otro programa la esté usando.', 'error');
+      this.errorOverlay.classList.remove('hidden');
+      this.errorTitulo.textContent = 'No se pudo acceder a la cámara.';
+      this.errorMensaje.textContent = 'Probá lo siguiente:\n• Revisá que ningún otro programa (Zoom, Teams, etc.) esté usando la cámara.\n• Buscá el ícono de cámara en la barra de direcciones del navegador y permití el acceso.\n• Recargá la página y aceptá el permiso cuando el navegador te lo pida.';
       return;
     }
 
@@ -178,7 +188,9 @@ class Game {
       await waitMetadata();
     } catch (metaErr) {
       console.error('[AF] Video no cargó:', metaErr);
-      this.mostrarEstado('La cámara no respondió. Jugá con mouse/touch.', 'error');
+      this.errorOverlay.classList.remove('hidden');
+      this.errorTitulo.textContent = 'La cámara no respondió.';
+      this.errorMensaje.textContent = 'El video no cargó. Probá recargando la página o usá el modo mouse/touch.';
       return;
     }
 

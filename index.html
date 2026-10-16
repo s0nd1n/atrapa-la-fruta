@@ -55,10 +55,14 @@
   <div class="game-container">
     <video id="video" autoplay playsinline muted></video>
     <canvas id="gameCanvas"></canvas>
-    <div id="overlay-camera-error" class="camera-error">
-      <p>No se pudo acceder a la cámara.</p>
-      <p style="font-size:0.9rem; opacity:0.9; margin-top:8px">Abrí este archivo con un servidor local (ej. <code>npx serve</code> o <code>live-server</code>) para usar la cámara, o presioná el botón de abajo para probar con mouse/touch.</p>
-      <button id="btn-fallback" class="btn-primary">Usar modo mouse/touch</button>
+    <div id="overlay-camera-error" class="camera-error hidden">
+      <p id="error-titulo">No se pudo acceder a la cámara.</p>
+      <p id="error-mensaje" style="font-size:0.9rem; opacity:0.9; margin-top:8px"></p>
+      <div class="modal-actions" style="margin-top:16px">
+        <button id="btn-reintentar-camara" class="btn-primary">Reintentar cámara</button>
+        <button id="btn-fallback" class="btn-secundario">Usar modo mouse/touch</button>
+      </div>
+      <p style="font-size:0.8rem; opacity:0.7; margin-top:12px">Si el navegador te bloqueó la cámara, buscá el ícono de candado o cámara en la barra de direcciones y permití el acceso.</p>
     </div>
     <div id="overlay-pause" class="overlay hidden">
       <h2>Pausa</h2>
