@@ -79,25 +79,65 @@ class Game {
     this.setScreen('screen-game');
     this.resetState();
 
-    try {
-      this.stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment' }
-      });
-      this.video.srcObject = this.stream;
-      await new Promise((res) => { this.video.onloadedmetadata = res; });
+    const tryStream = async (constraints) => {
+      console.log('[AF] Solicitando cámara con:', constraints);
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      this.video.srcObject = stream;
       await this.video.play();
-      this.cameraReady = true;
-      this.errorOverlay.classList.add('hidden');
-      this.motion.disableFallback();
-      this.fallbackMode = false;
-    } catch (err) {
-      console.error('Acceso a cámara denegado o no disponible:', err);
+      return stream;
+    };
+
+    const waitMetadata = () => new Promise((res, rej) => {
+      const timeout = setTimeout(() => rej(new Error('Timeout esperando video')), 3000);
+      this.video.onloadedmetadata = () => { clearTimeout(timeout); res(); };
+      this.video.onerror = () => { clearTimeout(timeout); rej(new Error('Error de reproducción de video')); };
+    });
+
+    try {
+      this.stream = await tryStream({ video: { facingMode: 'environment' } });
+    } catch (envErr) {
+      console.warn('[AF] facingMode environment falló, probando user:', envErr);
+      try {
+        this.stream = await tryStream({ video: { facingMode: 'user' } });
+      } catch (userErr) {
+        console.error('[AF] Cámara no disponible:', userErr);
+        this.cameraReady = false;
+        this.errorOverlay.classList.remove('hidden');
+        this.errorOverlay.querySelector('p').textContent =
+          'No se pudo acceder a la cámara. Abrí el archivo con un servidor local (ej. live-server) o usá el modo mouse/touch.';
+        this.motion.enableFallback();
+        this.fallbackMode = true;
+        this.enableFallbackInput();
+        this.lastTime = performance.now();
+        this.running = true;
+        this.paused = false;
+        document.getElementById('overlay-pause').classList.add('hidden');
+        requestAnimationFrame((t) => this.loop(t));
+        return;
+      }
+    }
+
+    try {
+      await waitMetadata();
+    } catch (metaErr) {
+      console.error('[AF] Video no cargó:', metaErr);
       this.cameraReady = false;
       this.errorOverlay.classList.remove('hidden');
       this.motion.enableFallback();
       this.fallbackMode = true;
       this.enableFallbackInput();
+      this.lastTime = performance.now();
+      this.running = true;
+      this.paused = false;
+      document.getElementById('overlay-pause').classList.add('hidden');
+      requestAnimationFrame((t) => this.loop(t));
+      return;
     }
+
+    this.cameraReady = true;
+    this.errorOverlay.classList.add('hidden');
+    this.motion.disableFallback();
+    this.fallbackMode = false;
 
     this.lastTime = performance.now();
     this.running = true;
