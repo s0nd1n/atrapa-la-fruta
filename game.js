@@ -159,8 +159,20 @@ class Game {
       try {
         console.log('[AF] Probando cámara con:', JSON.stringify(constraints));
         stream = await navigator.mediaDevices.getUserMedia(constraints);
+
+        // Configurar video para autoplay sin interacción (muted es obligatorio en muchos navegadores)
+        this.video.muted = true;
+        this.video.playsInline = true;
+        this.video.style.display = 'block';
         this.video.srcObject = stream;
-        await this.video.play();
+
+        try {
+          await this.video.play();
+        } catch (playErr) {
+          console.warn('[AF] video.play() falló, pero el stream está asignado:', playErr);
+          // Algunos navegadores requieren interacción para play(); igual arrancamos el juego
+        }
+
         break;
       } catch (err) {
         console.warn('[AF] Falló con:', JSON.stringify(constraints), err);
@@ -178,22 +190,8 @@ class Game {
 
     this.stream = stream;
 
-    const waitMetadata = () => new Promise((res, rej) => {
-      const timeout = setTimeout(() => rej(new Error('Timeout esperando video')), 10000);
-      this.video.onloadedmetadata = () => { clearTimeout(timeout); res(); };
-      this.video.onerror = () => { clearTimeout(timeout); rej(new Error('Error de reproducción de video')); };
-    });
-
-    try {
-      await waitMetadata();
-    } catch (metaErr) {
-      console.error('[AF] Video no cargó:', metaErr);
-      this.errorOverlay.classList.remove('hidden');
-      this.errorTitulo.textContent = 'La cámara no respondió.';
-      this.errorMensaje.textContent = 'El video no cargó. Probá recargando la página o usá el modo mouse/touch.';
-      return;
-    }
-
+    // Iniciar el juego inmediatamente, no esperamos a loadedmetadata.
+    // El video puede cargar sus frames asíncronamente; el loop seguirá corriendo.
     this.cameraReady = true;
     this.errorOverlay.classList.add('hidden');
     this.motion.disableFallback();
