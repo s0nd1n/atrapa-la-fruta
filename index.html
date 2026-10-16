@@ -20,6 +20,31 @@
   </div>
 </div>
 
+<!-- Modal de solicitud de permisos de cámara -->
+<div id="modal-permisos" class="modal hidden">
+  <div class="modal-card">
+    <div class="modal-icon">📷</div>
+    <h2>Permiso de la cámara</h2>
+    <p>Para jugar necesitás acceso a tu webcam. El video se procesa solo en tu dispositivo y no se sube a ningún servidor.</p>
+    <div class="permiso-lista">
+      <div class="permiso-item">
+        <span class="check">✓</span> Capturar video de la cámara web
+      </div>
+      <div class="permiso-item">
+        <span class="check">✓</span> Detectar movimiento de tus manos
+      </div>
+      <div class="permiso-item">
+        <span class="check">✓</span> Todo se ejecuta localmente (privacidad)
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button id="btn-permisos-denegar" class="btn-secundario">No, usar mouse/touch</button>
+      <button id="btn-permisos-aceptar" class="btn-primary">Sí, permitir cámara</button>
+    </div>
+    <p class="modal-nota">Si no das el permiso, podés jugar igualmente con el mouse o el dedo tocando la pantalla.</p>
+  </div>
+</div>
+
 <!-- Pantalla de Juego -->
 <div id="screen-game" class="screen">
   <div class="hud">

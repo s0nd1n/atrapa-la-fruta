@@ -26,6 +26,9 @@ class Game {
     this.highScoreEl = document.getElementById('high-score');
     this.errorOverlay = document.getElementById('overlay-camera-error');
     this.btnFallback = document.getElementById('btn-fallback');
+    this.modalPermisos = document.getElementById('modal-permisos');
+    this.btnPermisosAceptar = document.getElementById('btn-permisos-aceptar');
+    this.btnPermisosDenegar = document.getElementById('btn-permisos-denegar');
 
     this.score = 0;
     this.lives = CONFIG.startLives;
@@ -53,7 +56,15 @@ class Game {
   }
 
   bindUI() {
-    document.getElementById('btn-start').addEventListener('click', () => this.start());
+    document.getElementById('btn-start').addEventListener('click', () => this.mostrarModalPermisos());
+    this.btnPermisosAceptar.addEventListener('click', () => {
+      this.modalPermisos.classList.add('hidden');
+      this.startConCamara();
+    });
+    this.btnPermisosDenegar.addEventListener('click', () => {
+      this.modalPermisos.classList.add('hidden');
+      this.startSinCamara();
+    });
     document.getElementById('btn-resume').addEventListener('click', () => this.setPaused(false));
     document.getElementById('btn-restart').addEventListener('click', () => this.reset());
     this.btnFallback.addEventListener('click', () => this.enableFallback());
@@ -75,10 +86,32 @@ class Game {
     this.livesEl.textContent = '❤️'.repeat(this.lives);
   }
 
-  async start() {
+  mostrarModalPermisos() {
+    this.modalPermisos.classList.remove('hidden');
+  }
+
+  startConCamara() {
     this.setScreen('screen-game');
     this.resetState();
+    this.iniciarBucleConCamara();
+  }
 
+  startSinCamara() {
+    this.setScreen('screen-game');
+    this.resetState();
+    this.cameraReady = false;
+    this.errorOverlay.classList.add('hidden');
+    this.motion.enableFallback();
+    this.fallbackMode = true;
+    this.enableFallbackInput();
+    this.lastTime = performance.now();
+    this.running = true;
+    this.paused = false;
+    document.getElementById('overlay-pause').classList.add('hidden');
+    requestAnimationFrame((t) => this.loop(t));
+  }
+
+  async iniciarBucleConCamara() {
     const tryStream = async (constraints) => {
       console.log('[AF] Solicitando cámara con:', constraints);
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -104,7 +137,7 @@ class Game {
         this.cameraReady = false;
         this.errorOverlay.classList.remove('hidden');
         this.errorOverlay.querySelector('p').textContent =
-          'No se pudo acceder a la cámara. Abrí el archivo con un servidor local (ej. live-server) o usá el modo mouse/touch.';
+          'No se pudo acceder a la cámara. Abrí el archivo con un servidor local (ej. npx serve) o usá el modo mouse/touch.';
         this.motion.enableFallback();
         this.fallbackMode = true;
         this.enableFallbackInput();
