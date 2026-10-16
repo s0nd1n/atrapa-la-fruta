@@ -101,7 +101,7 @@ class Game {
 
   updateHUD() {
     this.scoreEl.textContent = this.score;
-    this.livesEl.textContent = '❤️'.repeat(this.lives);
+    this.livesEl.textContent = '❤️'.repeat(Math.max(0, this.lives));
   }
 
   mostrarModalPermisos() {
@@ -140,7 +140,7 @@ class Game {
     };
 
     const waitMetadata = () => new Promise((res, rej) => {
-      const timeout = setTimeout(() => rej(new Error('Timeout esperando video')), 3000);
+      const timeout = setTimeout(() => rej(new Error('Timeout esperando video')), 5000);
       this.video.onloadedmetadata = () => { clearTimeout(timeout); res(); };
       this.video.onerror = () => { clearTimeout(timeout); rej(new Error('Error de reproducción de video')); };
     });
@@ -283,7 +283,8 @@ class Game {
   }
 
   loseLife() {
-    this.lives--;
+    if (this.lives <= 0) return;
+    this.lives = Math.max(0, this.lives - 1);
     this.updateHUD();
     if (this.lives <= 0) {
       this.gameOver();
