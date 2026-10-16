@@ -266,10 +266,50 @@ html, body {
   background: rgba(255, 255, 255, 0.1);
 }
 
+.btn-secundario {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 12px;
+}
+
+.btn-secundario:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
 .modal-nota {
   font-size: 0.85rem;
   opacity: 0.7;
   margin: 0;
+}
+
+.msg-estado {
+  margin-top: 16px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  display: none;
+}
+
+.msg-estado.visible {
+  display: block;
+}
+
+.msg-estado.error {
+  background: rgba(231, 76, 60, 0.2);
+  border: 1px solid rgba(231, 76, 60, 0.5);
+  color: #ff7675;
+}
+
+.msg-estado.info {
+  background: rgba(52, 152, 219, 0.2);
+  border: 1px solid rgba(52, 152, 219, 0.5);
+  color: #74b9ff;
 }
 
 .overlay h2 {

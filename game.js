@@ -26,9 +26,11 @@ class Game {
     this.highScoreEl = document.getElementById('high-score');
     this.errorOverlay = document.getElementById('overlay-camera-error');
     this.btnFallback = document.getElementById('btn-fallback');
+    this.btnModoRapido = document.getElementById('btn-modo-rapido');
     this.modalPermisos = document.getElementById('modal-permisos');
     this.btnPermisosAceptar = document.getElementById('btn-permisos-aceptar');
     this.btnPermisosDenegar = document.getElementById('btn-permisos-denegar');
+    this.msgEstado = document.getElementById('msg-estado');
 
     this.score = 0;
     this.lives = CONFIG.startLives;
@@ -53,21 +55,37 @@ class Game {
     document.addEventListener('keydown', (e) => {
       if (e.key === 'p' || e.key === 'P') this.togglePause();
     });
+    this.mostrarEstado('Listo. Hacé clic en "Comenzar Juego" o "Modo rápido".', 'info');
+  }
+
+  mostrarEstado(texto, tipo = 'info') {
+    if (!this.msgEstado) return;
+    this.msgEstado.textContent = texto;
+    this.msgEstado.className = 'msg-estado visible ' + tipo;
+  }
+
+  ocultarEstado() {
+    if (!this.msgEstado) return;
+    this.msgEstado.classList.remove('visible');
   }
 
   bindUI() {
-    document.getElementById('btn-start').addEventListener('click', () => this.mostrarModalPermisos());
-    this.btnPermisosAceptar.addEventListener('click', () => {
+    const btnStart = document.getElementById('btn-start');
+    if (btnStart) btnStart.addEventListener('click', () => this.mostrarModalPermisos());
+    if (this.btnModoRapido) this.btnModoRapido.addEventListener('click', () => this.startSinCamara());
+    if (this.btnPermisosAceptar) this.btnPermisosAceptar.addEventListener('click', () => {
       this.modalPermisos.classList.add('hidden');
       this.startConCamara();
     });
-    this.btnPermisosDenegar.addEventListener('click', () => {
+    if (this.btnPermisosDenegar) this.btnPermisosDenegar.addEventListener('click', () => {
       this.modalPermisos.classList.add('hidden');
       this.startSinCamara();
     });
-    document.getElementById('btn-resume').addEventListener('click', () => this.setPaused(false));
-    document.getElementById('btn-restart').addEventListener('click', () => this.reset());
-    this.btnFallback.addEventListener('click', () => this.enableFallback());
+    const btnResume = document.getElementById('btn-resume');
+    if (btnResume) btnResume.addEventListener('click', () => this.setPaused(false));
+    const btnRestart = document.getElementById('btn-restart');
+    if (btnRestart) btnRestart.addEventListener('click', () => this.reset());
+    if (this.btnFallback) this.btnFallback.addEventListener('click', () => this.enableFallback());
   }
 
   resizeCanvas() {
@@ -87,6 +105,7 @@ class Game {
   }
 
   mostrarModalPermisos() {
+    this.mostrarEstado('Solicitando permiso de cámara...', 'info');
     this.modalPermisos.classList.remove('hidden');
   }
 
@@ -436,3 +455,18 @@ class Game {
     }
   }
 }
+
+// Inicializar el juego cuando el DOM esté listo
+window.addEventListener('DOMContentLoaded', () => {
+  try {
+    window.game = new Game();
+    console.log('[AF] Juego inicializado correctamente');
+  } catch (err) {
+    console.error('[AF] Error inicializando el juego:', err);
+    const msg = document.getElementById('msg-estado');
+    if (msg) {
+      msg.textContent = 'Error al iniciar el juego: ' + err.message;
+      msg.className = 'msg-estado visible error';
+    }
+  }
+});
