@@ -39,6 +39,7 @@ S8: Flujo extendido: reinicio sin recargar la página, limpieza de tracks de cá
 | T9 | S1, S3, S5 | inline | dc62d40 | done (fix vidas negativas, timeout video 5s) |
 | T10 | S1, S2, S5 | inline | 09d99e3 | done (flujo inicial con mouse/touch) |
 | T11 | S1, S2, S5 | inline | 8b37269 | done (flujo de cámara robusto: 3 constraint sets, timeout 10s, cámara primordial) |
+| T12 | S1, S2, S5 | inline | 493e4d9 | done (arranque inmediato sin esperar loadedmetadata, video muted+playsInline) |
 
 ## Log
 L1: Usuario solicitó implementar todo `spec.md` de una vez (2026-10-16).
@@ -46,3 +47,4 @@ L2: MVP implementado en commits `ccafe2a` y `83d94fd` sobre `feature/atrapa-la-f
 L3: Fixes críticos: Game instanciado en DOMContentLoaded, RangeError en vidas negativas, timeout de video a 5s.
 L4: "Comenzar Juego" iniciaba en modo mouse/touch sin cámara. Usuario requiere cámara como primordial.
 L5: Flujo de cámara reescrito: prueba con `video: true`, luego `facingMode: 'user'`, luego `facingMode: 'environment'`; timeout 10s; botón "Comenzar Juego" inicia con cámara por defecto. Commit `8b37269`.
+L6: Arranque inmediato sin esperar `loadedmetadata` (que no disparaba en Firefox). Video configurado con `muted=true` y `playsInline=true` para que `autoplay` funcione sin interacción previa. Commit `493e4d9`.
