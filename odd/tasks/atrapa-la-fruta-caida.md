@@ -41,6 +41,7 @@ S8: Flujo extendido: reinicio sin recargar la página, limpieza de tracks de cá
 | T11 | S1, S2, S5 | inline | 8b37269 | done (flujo de cámara robusto: 3 constraint sets, timeout 10s, cámara primordial) |
 | T12 | S1, S2, S5 | inline | 493e4d9 | done (arranque inmediato sin esperar loadedmetadata, video muted+playsInline) |
 | T13 | S2, S4 | inline | 1595b6f | done (optimizar motion: frameSkip, scale 0.3, buffers reutilizados; Game Over con reinicio directo) |
+| T14 | S1, S2 | inline | 70cdd39 | done (quitar efecto espejo: scaleX(-1) y compensacion de coordenadas X) |
 
 ## Log
 L1: Usuario solicitó implementar todo `spec.md` de una vez (2026-10-16).
