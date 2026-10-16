@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atrapa la Fruta Caída</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Pantalla de Inicio -->
+<div id="screen-start" class="screen active">
+  <div class="card">
+    <h1>Atrapa la Fruta Caída</h1>
+    <p>Mueve tus manos frente a la cámara para atrapar frutas y esquivar bombas.</p>
+    <div class="privacy-notice">
+      <strong>Privacidad:</strong> la cámara se usa solo en tu dispositivo. No se sube ni almacena nada.
+    </div>
+    <button id="btn-start" class="btn-primary">Comenzar Juego</button>
+  </div>
+</div>
+
+<!-- Pantalla de Juego -->
+<div id="screen-game" class="screen">
+  <div class="hud">
+    <div class="hud-item" id="hud-score">Puntos: <span id="score-value">0</span></div>
+    <div class="hud-item" id="hud-lives">Vidas: <span id="lives-value">❤️❤️❤️</span></div>
+  </div>
+  <div class="game-container">
+    <video id="video" autoplay playsinline muted></video>
+    <canvas id="gameCanvas"></canvas>
+    <div id="overlay-camera-error" class="camera-error hidden">
+      <p>No se pudo acceder a la cámara.</p>
+      <button id="btn-fallback" class="btn-primary">Usar modo mouse/touch</button>
+    </div>
+    <div id="overlay-pause" class="overlay hidden">
+      <h2>Pausa</h2>
+      <p>Presiona <strong>P</strong> para reanudar.</p>
+      <button id="btn-resume" class="btn-primary">Reanudar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Pantalla de Game Over -->
+<div id="screen-gameover" class="screen hidden">
+  <div class="card">
+    <h1>Game Over</h1>
+    <div class="final-score">Puntuación final: <span id="final-score">0</span></div>
+    <div class="high-score">Récord: <span id="high-score">0</span></div>
+    <button id="btn-restart" class="btn-primary">Reiniciar</button>
+  </div>
+</div>
+
+<script src="motion.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
