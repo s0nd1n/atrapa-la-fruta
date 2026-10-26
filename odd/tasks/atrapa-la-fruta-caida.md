@@ -1,0 +1,53 @@
+# Especificación Técnica: Juego Interactivo "Atrapa la Fruta Caída" (Webcam)
+
+## Objetivo
+Implementar un mini-juego arcade web en una sola página que use la cámara web del usuario y detección de movimiento por frame differencing para atrapar frutas y esquivar bombas.
+
+## Branch
+`feature/atrapa-la-fruta-caida`
+
+## Delivery strategy
+`ask-on-risk` (predeterminada)
+
+## Commits
+- `ccafe2a` — MVP completo (T1-T6)
+
+## Test runner
+Navegador (inspección manual de flujos BDD). No hay runner de tests automatizado configurado; la verificación es funcional en el navegador.
+
+## Specs
+S1: Gestión de cámara y permisos con `getUserMedia`, pantalla de solicitud, aviso de privacidad, efecto espejo, botón de apagar/encender, modo fallback con mouse/touch.
+S2: Detección de movimiento por frame differencing en `<canvas>` oculto, umbral y área mínima configurables, mapeo de coordenadas con compensación de espejo.
+S3: Lógica del juego: spawn aleatorio de frutas/bombas, colisión AABB con área de movimiento, puntuación +10 por fruta, -1 vida por bomba o fruta al suelo, game over en 0 vidas, cooldown breve tras colisión.
+S4: UI/HUD: pantalla de inicio, HUD con puntuación y vidas, pantalla de Game Over con puntuación final y récord en `localStorage`, pausa con tecla `P`, textos en español.
+S5: Requisitos no funcionales: bucle `requestAnimationFrame` a 60 FPS, procesamiento de cámara exclusivamente local (sin servidor), HTTPS requerido en producción, accesibilidad básica (ARIA, contraste), manejo de errores de permiso/cámara.
+S6: Stack y estructura: Vanilla HTML5/CSS3/JS (ES6+), archivos `index.html`, `style.css`, `game.js`, `motion.js`, sonidos generados con Web Audio API (sin assets externos obligatorios).
+S7: Dificultad progresiva: velocidad de caída y frecuencia de spawn aumentan con la puntuación.
+S8: Flujo extendido: reinicio sin recargar la página, limpieza de tracks de cámara al salir, fallback sin cámara.
+
+## Tasks
+| ID | Specs | Route | Commit | Status |
+|----|-------|-------|--------|--------|
+| T1 | S6 | inline | ccafe2a | done |
+| T2 | S1, S4 | inline | ccafe2a | done |
+| T3 | S1, S4, S5 | inline | ccafe2a | done |
+| T4 | S2 | inline | ccafe2a | done |
+| T5 | S3, S7, S8 | inline | ccafe2a | done |
+| T6 | S1-S8 | inline | ccafe2a | done (sintaxis JS verificada con `node --check`) |
+| T7 | S1, S4 | inline | 83d94fd | done (pantalla explícita de permisos de cámara) |
+| T8 | S1, S3, S5 | inline | 4880d75 | done (instanciar Game, modo rápido sin cámara) |
+| T9 | S1, S3, S5 | inline | dc62d40 | done (fix vidas negativas, timeout video 5s) |
+| T10 | S1, S2, S5 | inline | 09d99e3 | done (flujo inicial con mouse/touch) |
+| T11 | S1, S2, S5 | inline | 8b37269 | done (flujo de cámara robusto: 3 constraint sets, timeout 10s, cámara primordial) |
+| T12 | S1, S2, S5 | inline | 493e4d9 | done (arranque inmediato sin esperar loadedmetadata, video muted+playsInline) |
+| T13 | S2, S4 | inline | 1595b6f | done (optimizar motion: frameSkip, scale 0.3, buffers reutilizados; Game Over con reinicio directo) |
+| T14 | S1, S2 | inline | 70cdd39 | done (quitar efecto espejo: scaleX(-1) y compensacion de coordenadas X) |
+
+## Log
+L1: Usuario solicitó implementar todo `spec.md` de una vez (2026-10-16).
+L2: MVP implementado en commits `ccafe2a` y `83d94fd` sobre `feature/atrapa-la-fruta-caida`: index.html, style.css, motion.js, game.js. Se agregó pantalla explícita de permisos de cámara.
+L3: Fixes críticos: Game instanciado en DOMContentLoaded, RangeError en vidas negativas, timeout de video a 5s.
+L4: "Comenzar Juego" iniciaba en modo mouse/touch sin cámara. Usuario requiere cámara como primordial.
+L5: Flujo de cámara reescrito: prueba con `video: true`, luego `facingMode: 'user'`, luego `facingMode: 'environment'`; timeout 10s; botón "Comenzar Juego" inicia con cámara por defecto. Commit `8b37269`.
+L6: Arranque inmediato sin esperar `loadedmetadata` (que no disparaba en Firefox). Video configurado con `muted=true` y `playsInline=true` para que `autoplay` funcione sin interacción previa. Commit `493e4d9`.
+L7: Optimización de rendimiento: `motion.js` con `frameSkip=2`, `scale=0.3`, buffers reutilizados y salida temprana. Game Over con pantalla más prominente y método `restartGame()` que reinicia directamente con cámara. Commit `1595b6f`.
