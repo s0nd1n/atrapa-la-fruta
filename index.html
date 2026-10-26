@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Atrapa la Fruta Caída</title>
-<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8D%8E%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css?v=20261026">
 </head>
 <body>
 
@@ -16,16 +17,16 @@
     <div class="privacy-notice">
       <strong>Privacidad:</strong> la cámara se usa solo en tu dispositivo. No se sube ni almacena nada.
     </div>
-    <button id="btn-start" class="btn-primary">Comenzar Juego</button>
+    <button id="btn-start" class="btn-primary" type="button">Comenzar Juego</button>
     <div id="msg-estado" class="msg-estado info"></div>
   </div>
 </div>
 
 <!-- Modal de solicitud de permisos de cámara -->
-<div id="modal-permisos" class="modal hidden">
+<div id="modal-permisos" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="permisos-title">
   <div class="modal-card">
-    <div class="modal-icon">📷</div>
-    <h2>Permiso de la cámara</h2>
+    <div class="modal-icon" aria-hidden="true">📷</div>
+    <h2 id="permisos-title">Permiso de la cámara</h2>
     <p>Para jugar necesitás acceso a tu webcam. El video se procesa solo en tu dispositivo y no se sube a ningún servidor.</p>
     <div class="permiso-lista">
       <div class="permiso-item">
@@ -39,8 +40,8 @@
       </div>
     </div>
     <div class="modal-actions">
-      <button id="btn-permisos-denegar" class="btn-secundario">No, usar mouse/touch</button>
-      <button id="btn-permisos-aceptar" class="btn-primary">Sí, permitir cámara</button>
+      <button id="btn-permisos-denegar" class="btn-secundario" type="button">No, usar mouse/touch</button>
+      <button id="btn-permisos-aceptar" class="btn-primary" type="button">Sí, permitir cámara</button>
     </div>
     <p class="modal-nota">Si no das el permiso, podés jugar igualmente con el mouse o el dedo tocando la pantalla.</p>
   </div>
@@ -48,41 +49,47 @@
 
 <!-- Pantalla de Juego -->
 <div id="screen-game" class="screen">
-  <div class="hud">
-    <div class="hud-item" id="hud-score">Puntos: <span id="score-value">0</span></div>
-    <div class="hud-item" id="hud-lives">Vidas: <span id="lives-value">❤️❤️❤️</span></div>
-  </div>
   <div class="game-container">
     <video id="video" autoplay playsinline muted></video>
-    <canvas id="gameCanvas"></canvas>
-    <div id="overlay-camera-error" class="camera-error hidden">
-      <p id="error-titulo">No se pudo acceder a la cámara.</p>
-      <p id="error-mensaje" style="font-size:0.9rem; opacity:0.9; margin-top:8px"></p>
-      <div class="modal-actions" style="margin-top:16px">
-        <button id="btn-reintentar-camara" class="btn-primary">Reintentar cámara</button>
-        <button id="btn-fallback" class="btn-secundario">Usar modo mouse/touch</button>
+    <canvas id="gameCanvas" aria-hidden="true"></canvas>
+
+    <div class="hud">
+      <div class="hud-item" id="hud-score" aria-live="polite">Puntos: <span id="score-value">0</span></div>
+      <div class="hud-right">
+        <div class="hud-item" id="hud-lives" aria-live="polite">Vidas: <span id="lives-value">❤️❤️❤️</span></div>
+        <button id="btn-pause" class="hud-btn" type="button" aria-label="Pausar juego">Pausa</button>
       </div>
-      <p style="font-size:0.8rem; opacity:0.7; margin-top:12px">Si el navegador te bloqueó la cámara, buscá el ícono de candado o cámara en la barra de direcciones y permití el acceso.</p>
     </div>
-    <div id="overlay-pause" class="overlay hidden">
-      <h2>Pausa</h2>
-      <p>Presiona <strong>P</strong> para reanudar.</p>
-      <button id="btn-resume" class="btn-primary">Reanudar</button>
+
+    <div id="overlay-camera-error" class="camera-error hidden" role="alert">
+      <p id="error-titulo">No se pudo acceder a la cámara.</p>
+      <p id="error-mensaje"></p>
+      <div class="modal-actions camera-error-actions">
+        <button id="btn-reintentar-camara" class="btn-primary" type="button">Reintentar cámara</button>
+        <button id="btn-fallback" class="btn-secundario" type="button">Usar modo mouse/touch</button>
+      </div>
+      <p class="camera-error-hint">Si el navegador te bloqueó la cámara, buscá el ícono de candado o cámara en la barra de direcciones y permití el acceso.</p>
+    </div>
+
+    <div id="overlay-pause" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="pause-title">
+      <h2 id="pause-title">Pausa</h2>
+      <p>Presioná <strong>P</strong> o el botón para reanudar.</p>
+      <button id="btn-resume" class="btn-primary" type="button">Reanudar</button>
     </div>
   </div>
 </div>
 
 <!-- Pantalla de Game Over -->
-<div id="screen-gameover" class="screen hidden">
+<div id="screen-gameover" class="screen">
   <div class="card">
     <h1>Game Over</h1>
     <div class="final-score">Puntuación final: <span id="final-score">0</span></div>
     <div class="high-score">Récord: <span id="high-score">0</span></div>
-    <button id="btn-restart" class="btn-primary">Reiniciar</button>
+    <button id="btn-restart" class="btn-primary" type="button">Reiniciar</button>
   </div>
 </div>
 
-<script src="motion.js"></script>
-<script src="game.js"></script>
+<script src="motion.js?v=20261026"></script>
+<script src="game.js?v=20261026"></script>
 </body>
 </html>
